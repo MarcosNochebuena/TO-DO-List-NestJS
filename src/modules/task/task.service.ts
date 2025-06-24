@@ -11,11 +11,11 @@ export class TaskService {
   ) {}
 
   async findAll(): Promise<Task[]> {
-    return this.taskRepository.find();
+    return await this.taskRepository.find();
   }
 
   async findById(id: number): Promise<Task> {
-    const task = await this.taskRepository.findOneBy({ id });
+    const task = await this.taskRepository.findOne({ where: { id } });
     if (!task) {
       throw new NotFoundException(`Tarea con ID ${id} no encontrada`);
     }
@@ -23,19 +23,25 @@ export class TaskService {
   }
 
   async createTask(task: Partial<Task>): Promise<Task> {
-    return this.taskRepository.save(task);
+    return await this.taskRepository.save(task);
   }
 
-  async updateTask(id: number, task: Partial<Task>): Promise<Task> {
-    await this.findById(id); // Verifica si existe
-    await this.taskRepository.update(id, task);
-    return this.findById(id);
+  async updateTask(id: number, updateFields: Partial<Task>): Promise<Task> {
+    const task = await this.findById(id); // Verifica si existe
+    if (!task) {
+      throw new NotFoundException("Tarea no encontrada");
+
+    }
+    await this.taskRepository.update(id, updateFields);
+    return await this.findById(id);
   }
 
-  async deleteTask(id: number): Promise<void> {
-    const result = await this.taskRepository.delete(id);
-    if (result.affected === 0) {
+  async deleteTask(id: number): Promise<String> {
+    const task = await this.findById(id); // Ver
+    if (!task) {
       throw new NotFoundException(`Tarea con ID ${id} no encontrada`);
     }
+    await this.taskRepository.delete(id);
+    return "Tare eliminada correctamente"
   }
 }
