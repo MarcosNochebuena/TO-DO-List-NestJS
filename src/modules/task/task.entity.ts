@@ -4,7 +4,10 @@ import {
   Column,
   CreateDateColumn,
   UpdateDateColumn,
+  ManyToOne,
+  JoinColumn,
 } from 'typeorm';
+import { User } from '../users/user.entity';
 
 export enum TaskStatus {
   PENDING = 'pending',
@@ -12,7 +15,7 @@ export enum TaskStatus {
   COMPLETED = 'completed',
 }
 
-@Entity()
+@Entity('tasks')
 export class Task {
   @PrimaryGeneratedColumn()
   id: number;
@@ -35,4 +38,8 @@ export class Task {
 
   @UpdateDateColumn()
   updatedAt: Date;
+
+  @ManyToOne(() => User, user => user.tasks, { nullable: false } )
+  @JoinColumn()
+  user: User;
 }
