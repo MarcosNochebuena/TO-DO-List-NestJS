@@ -25,4 +25,12 @@ export class UserValidator {
     }
     return user;
   }
+
+  async findUserByUsername(username: string): Promise<User> {
+    const user = await this.userRepository.findOne({ where: { username } });
+    if (!user) {
+      throw new NotFoundException(`Usuario con nombre ${username} no encontrado`);
+    }
+    return user;
+  }
 }

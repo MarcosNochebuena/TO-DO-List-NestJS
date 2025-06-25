@@ -36,8 +36,13 @@ export class UserService {
   }
 
   async deleteUser(id: number): Promise<string> {
-    const user = await this.findById(id);
+    await this.userValidator.findUser(id);
     await this.userRepository.delete(id);
-    return `Usuario: ${user.username} eliminado correctamente`;
+    return `Usuario eliminado correctamente`;
+  }
+
+  async findByUsername(username: string): Promise<User | null> {
+    const userFound = await this.userRepository.findOne({ where: { username } });
+    return userFound;
   }
 }

@@ -9,5 +9,6 @@ import { UserValidator } from './user.validator';
   imports: [TypeOrmModule.forFeature([User])],
   controllers: [UserController],
   providers: [UserService, UserValidator],
+  exports: [UserService, UserValidator],
 })
 export class UsersModule {}
